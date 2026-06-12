@@ -212,7 +212,7 @@ EMAIL_PASS=your_gmail_app_password
 
 ## 1. Candidate Job Details & Resume Upload
 
-![Job Details](screenshots/1.png)
+![Job Details](screenshots/10.png)
 
 Candidates can:
 - View complete job details
@@ -224,7 +224,7 @@ Candidates can:
 
 ## 2. Saved Jobs Dashboard
 
-![Saved Jobs](screenshots/2.png)
+![Saved Jobs](screenshots/9.png)
 
 Candidates can bookmark jobs and access them later from the dashboard.
 
@@ -232,7 +232,7 @@ Candidates can bookmark jobs and access them later from the dashboard.
 
 ## 3. Candidate Dashboard Profile
 
-![Candidate Dashboard](screenshots/3.png)
+![Candidate Dashboard](screenshots/8.png)
 
 Manage profile information including:
 - Skills
@@ -244,7 +244,7 @@ Manage profile information including:
 
 ## 4. Post Job Page with Company Logo Upload
 
-![Post Job](screenshots/4.png)
+![Post Job](screenshots/7.png)
 
 Recruiters can create new job postings and upload company logos.
 
@@ -252,7 +252,7 @@ Recruiters can create new job postings and upload company logos.
 
 ## 5. Recruiter Dashboard
 
-![Recruiter Dashboard](screenshots/5.png)
+![Recruiter Dashboard](screenshots/6.png)
 
 Dashboard statistics include:
 - Total jobs posted
@@ -263,7 +263,7 @@ Dashboard statistics include:
 
 ## 6. Login Page
 
-![Login](screenshots/6.png)
+![Login](screenshots/5.png)
 
 Secure JWT-based authentication system.
 
@@ -271,7 +271,7 @@ Secure JWT-based authentication system.
 
 ## 7. Registration Page
 
-![Register](screenshots/7.png)
+![Register](screenshots/4.png)
 
 Role-based registration for:
 - Recruiters
@@ -281,7 +281,7 @@ Role-based registration for:
 
 ## 8. Browse Jobs Page
 
-![Browse Jobs](screenshots/8.png)
+![Browse Jobs](screenshots/3.png)
 
 Features:
 - Search jobs
@@ -295,7 +295,7 @@ Features:
 
 ## 9. Email Notification System
 
-![Email Notification](screenshots/9.png)
+![Email Notification](screenshots/2.png)
 
 Recruiters automatically receive email notifications whenever a candidate applies for a job.
 
@@ -309,7 +309,7 @@ The email contains:
 
 ## 10. Recruiter Application Management
 
-![Applications](screenshots/10.png)
+![Applications](screenshots/1.png)
 
 Recruiters can:
 - View all applications
