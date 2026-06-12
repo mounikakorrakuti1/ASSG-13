@@ -1,208 +1,383 @@
-# 💼 MiniJobPortal — Full Stack MERN Assignment
+# 💼 MiniJobPortal — Full Stack MERN Job Portal
 
-A complete Job Portal application where **recruiters can post jobs** and **candidates can browse and apply**. Built with React, Node.js, Express, and MongoDB.
+A complete **Full Stack MERN Job Portal** built using **MongoDB, Express.js, React.js, and Node.js**. The platform supports separate recruiter and candidate workflows with authentication, job posting, resume uploads, email notifications, company logos, and advanced search features.
 
 ---
 
-## 🗂 Folder Structure
+## 🚀 Features
 
-```
-job-portal/
-├── client/                    # React Frontend (Vite)
+### 🔐 Authentication & Authorization
+- JWT-based Authentication
+- Secure Password Hashing using bcrypt
+- Role-based Access Control
+  - Recruiter
+  - Candidate
+
+---
+
+### 👨‍💼 Recruiter Features
+- Recruiter Registration & Login
+- Post New Jobs
+- Upload Company Logos
+- Edit Existing Jobs
+- Delete Jobs
+- View Applications
+- Download/View Candidate Resumes
+- Recruiter Dashboard Statistics
+- Email Notifications on New Applications
+
+---
+
+### 👨‍🎓 Candidate Features
+- Candidate Registration & Login
+- Browse Jobs
+- Search Jobs
+- Save Jobs
+- Apply for Jobs
+- Upload Resume (PDF/DOC/DOCX)
+- Candidate Dashboard
+- Edit Profile
+
+---
+
+### 🔎 Advanced Job Search
+- Search by Job Title
+- Search by Company
+- Filter by Location
+- Filter by Salary Range
+- Filter by Job Type
+- Sorting Options
+- Pagination
+
+---
+
+### 📂 File Upload Features
+- Resume Upload
+  - PDF
+  - DOC
+  - DOCX
+- Company Logo Upload
+- Multer-based File Storage
+
+---
+
+### 📧 Email Notification System
+When a candidate applies:
+
+- Recruiter receives an email automatically.
+- Email contains:
+  - Applicant Name
+  - Email
+  - Phone Number
+  - Job Title
+  - Company Name
+
+Implemented using:
+
+- NodeMailer
+- Gmail SMTP
+
+---
+
+### 🎨 User Interface
+- Responsive Design
+- Dark Mode
+- Light Mode
+- Modern Dashboard UI
+- Mobile Friendly
+
+---
+
+## 🛠️ Tech Stack
+
+### Frontend
+- React.js
+- React Router DOM
+- CSS3
+- Fetch API
+
+### Backend
+- Node.js
+- Express.js
+
+### Database
+- MongoDB
+- Mongoose
+
+### Authentication
+- JWT
+- bcryptjs
+
+### File Upload
+- Multer
+
+### Email Service
+- NodeMailer
+
+---
+
+## 📂 Project Structure
+
+```text
+MiniJobPortal/
+│
+├── client/
 │   ├── src/
 │   │   ├── components/
-│   │   │   ├── Navbar.jsx
-│   │   │   ├── JobCard.jsx
-│   │   │   ├── JobForm.jsx
-│   │   │   ├── ApplyForm.jsx
-│   │   │   ├── Loader.jsx
-│   │   │   ├── Toast.jsx
-│   │   │   ├── Pagination.jsx
-│   │   │   └── ConfirmModal.jsx
 │   │   ├── pages/
-│   │   │   ├── HomePage.jsx
-│   │   │   ├── PostJobPage.jsx
-│   │   │   ├── JobDetailPage.jsx
-│   │   │   ├── EditJobPage.jsx
-│   │   │   └── NotFoundPage.jsx
 │   │   ├── services/
-│   │   │   └── api.js
 │   │   ├── hooks/
-│   │   │   └── useDebounce.js
-│   │   ├── App.jsx
-│   │   ├── main.jsx
-│   │   └── index.css
-│   ├── index.html
-│   └── package.json
+│   │   └── context/
+│   │
+│   └── public/
 │
-└── server/                    # Node.js + Express Backend
-    ├── config/
-    │   └── db.js
-    ├── models/
-    │   ├── Job.js
-    │   └── Application.js
-    ├── controllers/
-    │   ├── jobController.js
-    │   └── applicationController.js
-    ├── routes/
-    │   └── jobRoutes.js
-    ├── server.js
-    ├── .env
-    └── package.json
+├── server/
+│   ├── config/
+│   ├── controllers/
+│   ├── middleware/
+│   ├── models/
+│   ├── routes/
+│   ├── uploads/
+│   │   ├── resumes/
+│   │   └── logos/
+│   └── server.js
+│
+├── screenshots/
+└── README.md
 ```
 
 ---
 
-## ⚙️ Tech Stack
+## ⚙️ Installation
 
-| Layer     | Technology                  |
-|-----------|-----------------------------|
-| Frontend  | React 18, Vite, React Router v6 |
-| Hooks     | useState, useEffect, custom useDebounce |
-| Styling   | Plain CSS with CSS Variables (light + dark) |
-| HTTP      | Fetch API                   |
-| Backend   | Node.js, Express.js         |
-| Database  | MongoDB, Mongoose           |
-| Dev Tools | nodemon, dotenv, cors       |
-
----
-
-## 🚀 Getting Started
-
-### Prerequisites
-
-- Node.js v18+
-- MongoDB (local install or MongoDB Atlas)
-- npm
-
----
-
-### 1. Clone / Download the Project
+### Clone Repository
 
 ```bash
-git clone <your-repo-url>
-cd job-portal
+git clone https://github.com/mounikakorrakuti1/ASSG-13.git
+cd ASSG-13
 ```
 
 ---
 
-### 2. Setup & Run the Backend
+## Backend Setup
 
 ```bash
 cd server
 npm install
-```
-
-Edit `.env` to set your MongoDB URI:
-
-```env
-PORT=5000
-MONGO_URI=mongodb://localhost:27017/minijobportal
-NODE_ENV=development
-```
-
-Start the backend:
-
-```bash
-# Development (auto-restart on changes)
 npm run dev
-
-# Production
-npm start
 ```
 
-✅ Server will run at: `http://localhost:5000`
+Server runs on:
+
+```text
+http://localhost:5000
+```
 
 ---
 
-### 3. Setup & Run the Frontend
+## Frontend Setup
 
 ```bash
-cd ../client
+cd client
 npm install
 npm run dev
 ```
 
-✅ Frontend will run at: `http://localhost:5173`
+Frontend runs on:
 
----
-
-## 🔗 API Endpoints
-
-| Method | Endpoint                     | Description                          |
-|--------|------------------------------|--------------------------------------|
-| GET    | `/api/jobs`                  | Get all jobs (search, filter, sort, paginate) |
-| POST   | `/api/jobs`                  | Create a new job posting             |
-| GET    | `/api/jobs/:id`              | Get a single job by ID               |
-| PUT    | `/api/jobs/:id`              | Update/edit an existing job          |
-| DELETE | `/api/jobs/:id`              | Delete a job (also deletes its applications) |
-| POST   | `/api/jobs/:id/apply`        | Submit a job application             |
-| GET    | `/api/jobs/:id/applications` | Get all applications for a job       |
-
-### Query Parameters for `GET /api/jobs`
-
-| Param    | Example              | Description              |
-|----------|----------------------|--------------------------|
-| `search` | `?search=developer`  | Search by title or company |
-| `jobType`| `?jobType=Full Time` | Filter by job type       |
-| `sortBy` | `?sortBy=salary_desc`| Sort by salary           |
-| `page`   | `?page=2`            | Page number (default: 1) |
-| `limit`  | `?limit=9`           | Results per page (default: 9) |
-
----
-
-## ✅ Features
-
-### Core Features
-- ✅ Create, View, Edit, Delete Job Postings
-- ✅ Apply for Jobs (name, email, phone)
-- ✅ View all Applications per Job
-- ✅ Search by Job Title & Company Name
-- ✅ Filter by Job Type (Full Time / Part Time / Contract)
-- ✅ Form Validation (required fields, email, phone, numeric salary)
-- ✅ Loading spinners, error states, empty states
-
-### Bonus Features
-- 🌙 Dark Mode Toggle (persisted via localStorage)
-- 📄 Pagination (9 jobs per page)
-- 💰 Sort by Salary (High→Low / Low→High)
-- 📱 Fully Responsive Design (mobile + tablet + desktop)
-- 🚫 Duplicate application prevention (same email per job)
-- 🗑️ Cascade delete (deletes applications when job is deleted)
-
----
-
-## 📋 Form Validation Rules
-
-| Field       | Rule                                    |
-|-------------|-----------------------------------------|
-| All fields  | Required — no empty values allowed      |
-| Email       | Must match valid email format           |
-| Phone       | 10-digit Indian number or international |
-| Salary      | Must be a non-negative number           |
-| Job Type    | Must be Full Time / Part Time / Contract |
-
----
-
-## 🗃️ MongoDB Models
-
-### Job
-```
-title, company, location, jobType, salary, description, timestamps
-```
-
-### Application
-```
-job (ref: Job), fullName, email, phone, timestamps
-Unique index on (job + email) — prevents duplicate applications
+```text
+http://localhost:5173
 ```
 
 ---
 
-## 👩‍💻 Author
+## 🔑 Environment Variables
 
-**Student Name:** ___________________  
-**Roll No:** ___________________  
-**Branch:** CSE  
-**College:** SRKR Engineering College, Bhimavaram  
-**Assignment:** Full Stack MERN — Mini Job Portal  
+Create a `.env` file inside `server/`
+
+```env
+PORT=5000
+
+MONGO_URI=your_mongodb_connection_string
+
+JWT_SECRET=your_secret_key
+
+EMAIL_USER=your_email@gmail.com
+EMAIL_PASS=your_gmail_app_password
+```
+
+---
+
+# 📸 Project Screenshots
+
+## 1. Candidate Job Details & Resume Upload
+
+![Job Details](screenshots/1.png)
+
+Candidates can:
+- View complete job details
+- Upload resumes (PDF/DOC/DOCX)
+- Apply for jobs
+- Save jobs for later
+
+---
+
+## 2. Saved Jobs Dashboard
+
+![Saved Jobs](screenshots/2.png)
+
+Candidates can bookmark jobs and access them later from the dashboard.
+
+---
+
+## 3. Candidate Dashboard Profile
+
+![Candidate Dashboard](screenshots/3.png)
+
+Manage profile information including:
+- Skills
+- Experience
+- Location
+- Saved jobs
+
+---
+
+## 4. Post Job Page with Company Logo Upload
+
+![Post Job](screenshots/4.png)
+
+Recruiters can create new job postings and upload company logos.
+
+---
+
+## 5. Recruiter Dashboard
+
+![Recruiter Dashboard](screenshots/5.png)
+
+Dashboard statistics include:
+- Total jobs posted
+- Total applications
+- Average applications per job
+
+---
+
+## 6. Login Page
+
+![Login](screenshots/6.png)
+
+Secure JWT-based authentication system.
+
+---
+
+## 7. Registration Page
+
+![Register](screenshots/7.png)
+
+Role-based registration for:
+- Recruiters
+- Job Seekers
+
+---
+
+## 8. Browse Jobs Page
+
+![Browse Jobs](screenshots/8.png)
+
+Features:
+- Search jobs
+- Filter by company
+- Filter by location
+- Salary filtering
+- Job type filtering
+- Pagination
+
+---
+
+## 9. Email Notification System
+
+![Email Notification](screenshots/9.png)
+
+Recruiters automatically receive email notifications whenever a candidate applies for a job.
+
+The email contains:
+- Applicant Name
+- Email
+- Phone Number
+- Job Details
+
+---
+
+## 10. Recruiter Application Management
+
+![Applications](screenshots/10.png)
+
+Recruiters can:
+- View all applications
+- Access uploaded resumes
+- Track application dates
+
+---
+
+## 🔒 Security Features
+
+- Password Hashing using bcrypt
+- JWT Authentication
+- Protected Routes
+- Role-based Authorization
+- File Type Validation
+- Input Validation
+- Duplicate Application Prevention
+
+---
+
+## 📈 Future Enhancements
+
+- Cloudinary Integration
+- Resume Parsing
+- Interview Scheduling
+- AI Resume Screening
+- Job Recommendation System
+- Real-time Notifications
+- Admin Dashboard
+
+---
+
+## 👨‍💻 Developed By
+
+**Mounika Korrakuti**
+
+SRKR Engineering College
+
+Department of Computer Science & Engineering
+
+---
+
+## ⭐ Project Highlights
+
+✅ JWT Authentication
+
+✅ Role-Based Access Control
+
+✅ Resume Upload
+
+✅ Company Logo Upload
+
+✅ Email Notifications
+
+✅ Recruiter Dashboard
+
+✅ Candidate Dashboard
+
+✅ Saved Jobs
+
+✅ Advanced Search & Filters
+
+✅ Pagination
+
+✅ Dark/Light Mode
+
+✅ MongoDB Integration
+
+✅ REST API Architecture
+
+---

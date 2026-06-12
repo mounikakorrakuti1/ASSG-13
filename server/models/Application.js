@@ -32,6 +32,10 @@ const applicationSchema = new mongoose.Schema(
         "Please enter a valid phone number",
       ],
     },
+    resumePath: {
+  type: String,
+  default: "",
+},
   },
   {
     timestamps: true,

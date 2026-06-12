@@ -1,6 +1,11 @@
 import { useState } from "react";
 
-const EMPTY = { fullName: "", email: "", phone: "" };
+const EMPTY = {
+  fullName: "",
+  email: "",
+  phone: "",
+  resume: null,
+};
 
 const ApplyForm = ({ onSubmit, loading }) => {
   const [form, setForm] = useState(EMPTY);
@@ -35,6 +40,7 @@ const ApplyForm = ({ onSubmit, loading }) => {
       setErrors(validationErrors);
       return;
     }
+    console.log("FORM DATA:", form);
     onSubmit(form);
   };
 
@@ -81,7 +87,22 @@ const ApplyForm = ({ onSubmit, loading }) => {
         />
         {errors.phone && <span className="error-msg">{errors.phone}</span>}
       </div>
+<div className="form-group">
+  <label className="form-label">
+    Resume (PDF/DOC/DOCX)
+  </label>
 
+  <input
+    type="file"
+    accept=".pdf,.doc,.docx"
+    onChange={(e) =>
+      setForm((prev) => ({
+        ...prev,
+        resume: e.target.files[0],
+      }))
+    }
+  />
+</div>
       <button type="submit" className="btn btn-primary btn-full" disabled={loading}>
         {loading ? (
           <span className="btn-loading">

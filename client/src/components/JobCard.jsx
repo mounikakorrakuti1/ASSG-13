@@ -13,8 +13,21 @@ const JobCard = ({ job }) => {
     <div className="job-card">
       <div className="job-card-header">
         <div className="job-company-avatar">
-          {job.company.charAt(0).toUpperCase()}
-        </div>
+  {job.companyLogo ? (
+    <img
+      src={`http://localhost:5000${job.companyLogo}`}
+      alt={job.company}
+      style={{
+        width: "50px",
+        height: "50px",
+        borderRadius: "50%",
+        objectFit: "cover",
+      }}
+    />
+  ) : (
+    job.company.charAt(0).toUpperCase()
+  )}
+</div>
         <span className={`job-type-badge ${badgeClass}`}>{job.jobType}</span>
       </div>
 

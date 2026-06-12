@@ -78,7 +78,19 @@ if (minSalary || maxSalary) {
 // Protected: recruiter only (enforced in route)
 const createJob = async (req, res) => {
   try {
-    const { title, company, location, jobType, salary, description } = req.body;
+    const {
+  title,
+  company,
+  location,
+  jobType,
+  salary,
+  description
+} = req.body;
+let companyLogo = "";
+
+if (req.file) {
+  companyLogo = `/uploads/logos/${req.file.filename}`;
+}
 
     if (!title || !company || !location || !jobType || salary === undefined || salary === "" || !description) {
       return res.status(400).json({
@@ -92,14 +104,15 @@ const createJob = async (req, res) => {
     }
 
     const job = await Job.create({
-      title: title.trim(),
-      company: company.trim(),
-      location: location.trim(),
-      jobType,
-      salary: Number(salary),
-      description: description.trim(),
-      postedBy: req.user.id,           // set from JWT via verifyToken
-    });
+  title: title.trim(),
+  company: company.trim(),
+  companyLogo,
+  location: location.trim(),
+  jobType,
+  salary: Number(salary),
+  description: description.trim(),
+  postedBy: req.user.id,
+});
 
     await job.populate("postedBy", "name email");
 

@@ -52,13 +52,31 @@ export const fetchJobById = async (id) => {
 };
 
 export const createJob = async (jobData) => {
-  const res = await authFetch(`${BASE_URL}/jobs`, {
+  const formData = new FormData();
+
+  formData.append("title", jobData.title);
+  formData.append("company", jobData.company);
+  formData.append("location", jobData.location);
+  formData.append("jobType", jobData.jobType);
+  formData.append("salary", jobData.salary);
+  formData.append("description", jobData.description);
+
+  if (jobData.companyLogo) {
+    formData.append("companyLogo", jobData.companyLogo);
+  }
+
+  const token = localStorage.getItem("mjp-token");
+
+  const res = await fetch(`${BASE_URL}/jobs`, {
     method: "POST",
-    body: JSON.stringify(jobData),
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    body: formData,
   });
+
   return handleResponse(res);
 };
-
 export const updateJob = async (id, jobData) => {
   const res = await authFetch(`${BASE_URL}/jobs/${id}`, {
     method: "PUT",
@@ -74,11 +92,23 @@ export const deleteJob = async (id) => {
 
 // ─── Applications ──────────────────────────────────────────────────────────────
 export const applyForJob = async (id, applicationData) => {
+
+console.log(applicationData);  
+const formData = new FormData();
+
+  formData.append("fullName", applicationData.fullName);
+  formData.append("email", applicationData.email);
+  formData.append("phone", applicationData.phone);
+
+  if (applicationData.resume) {
+    formData.append("resume", applicationData.resume);
+  }
+
   const res = await fetch(`${BASE_URL}/jobs/${id}/apply`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(applicationData),
+    body: formData,
   });
+
   return handleResponse(res);
 };
 

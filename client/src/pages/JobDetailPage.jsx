@@ -294,12 +294,13 @@ const JobDetailPage = () => {
               <table className="applications-table">
                 <thead>
                   <tr>
-                    <th>#</th>
-                    <th>Full Name</th>
-                    <th>Email</th>
-                    <th>Phone</th>
-                    <th>Applied On</th>
-                  </tr>
+  <th>#</th>
+  <th>Full Name</th>
+  <th>Email</th>
+  <th>Phone</th>
+  <th>Resume</th>
+  <th>Applied On</th>
+</tr>
                 </thead>
                 <tbody>
                   {applications.map((app, idx) => (
@@ -310,6 +311,20 @@ const JobDetailPage = () => {
                         <a href={`mailto:${app.email}`} className="email-link">{app.email}</a>
                       </td>
                       <td>{app.phone}</td>
+                      <td>
+  {app.resumePath ? (
+    <a
+      href={`http://localhost:5000${app.resumePath}`}
+      target="_blank"
+      rel="noreferrer"
+      className="btn btn-outline btn-sm"
+    >
+      View Resume
+    </a>
+  ) : (
+    "No Resume"
+  )}
+</td>
                       <td>
                         {new Date(app.createdAt).toLocaleDateString("en-IN", {
                           day: "numeric",

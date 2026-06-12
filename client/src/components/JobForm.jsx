@@ -7,6 +7,7 @@ const EMPTY_FORM = {
   jobType: "",
   salary: "",
   description: "",
+  companyLogo: null,
 };
 
 // Normalise initialData so salary is always a string in the input (avoids
@@ -94,7 +95,20 @@ const JobForm = ({ initialData, onSubmit, loading, submitLabel = "Post Job" }) =
           {errors.company && <span className="error-msg">{errors.company}</span>}
         </div>
       </div>
+<div className="form-group">
+  <label>Company Logo</label>
 
+  <input
+    type="file"
+    accept=".png,.jpg,.jpeg"
+    onChange={(e) =>
+      setForm((prev) => ({
+        ...prev,
+        companyLogo: e.target.files[0],
+      }))
+    }
+  />
+</div>
       <div className="form-row">
         <div className="form-group">
           <label className="form-label" htmlFor="location">Location *</label>

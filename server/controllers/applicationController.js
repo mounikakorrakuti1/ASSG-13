@@ -1,14 +1,22 @@
 const Application = require("../models/Application");
+const { sendApplicationEmail } = require("../utils/mailer");
 const Job = require("../models/Job");
 
 // ─── POST /api/jobs/:id/apply ─────────────────────────────────────────────────
 const applyForJob = async (req, res) => {
   try {
     const { fullName, email, phone } = req.body;
+    console.log("BODY:", req.body);
+console.log("FILE:", req.file);
+
+const resumePath = req.file
+  ? `/uploads/resumes/${req.file.filename}`
+  : "";
     const jobId = req.params.id;
 
     // Check job exists
-    const job = await Job.findById(jobId);
+    const job = await Job.findById(jobId)
+  .populate("postedBy", "email name");
     if (!job) {
       return res.status(404).json({ success: false, message: "Job not found" });
     }
@@ -40,11 +48,17 @@ const applyForJob = async (req, res) => {
     }
 
     const application = await Application.create({
-      job: jobId,
-      fullName: fullName.trim(),
-      email: email.trim().toLowerCase(),
-      phone: phone.trim(),
-    });
+  job: jobId,
+  fullName: fullName.trim(),
+  email: email.trim().toLowerCase(),
+  phone: phone.trim(),
+  resumePath,
+});
+await sendApplicationEmail(
+  job.postedBy.email,
+  application,
+  job
+);
 
     res.status(201).json({
       success: true,
