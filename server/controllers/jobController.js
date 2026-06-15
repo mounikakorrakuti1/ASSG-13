@@ -15,7 +15,9 @@ const getAllJobs = async (req, res) => {
   maxSalary = ""
 } = req.query;
 
-    const filter = {};
+    const filter = {
+  status: { $ne: "closed" }
+};
     if (search.trim()) {
       filter.$or = [
         { title: { $regex: search.trim(), $options: "i" } },
@@ -245,5 +247,77 @@ const getRecruiterStats = async (req, res) => {
   }
 };
 
-// Re-export including new function
-module.exports = { getAllJobs, createJob, getJobById, updateJob, deleteJob, getRecruiterStats };
+// ─── PATCH /api/jobs/:id/status ──────────────────────────────────────────────
+// Protected: recruiter + must be owner.
+// Body: { "status": "open" | "closed" }
+const patchJobStatus = async (req, res) => {
+  try {
+    const { status } = req.body;
+
+    // Validate input
+    if (!status) {
+      return res.status(400).json({
+        success: false,
+        message: "status field is required.",
+      });
+    }
+    if (!["open", "closed"].includes(status)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid status. Allowed values: open, closed.",
+      });
+    }
+
+    // Fetch job and enforce ownership
+    const job = await Job.findById(req.params.id);
+    if (!job) {
+      return res.status(404).json({ success: false, message: "Job not found." });
+    }
+    if (job.postedBy.toString() !== req.user.id) {
+      return res.status(403).json({
+        success: false,
+        message: "You can only change the status of jobs you posted.",
+      });
+    }
+
+    // No-op guard — avoid a pointless write and log entry
+    if (job.status === status) {
+      return res.status(200).json({
+        success: true,
+        message: `Job is already ${status}.`,
+        data: job,
+      });
+    }
+
+    // Persist the status change
+    job.status = status;
+    await job.save();
+
+    // Write activity log entry
+    const ActivityLog = require("../models/ActivityLog");
+    const action = status === "closed" ? "Closed" : "Reopened";
+    await ActivityLog.create({
+      recruiterId: req.user.id,
+      message: `${action} job: ${job.title}`,
+      entityType: "job",
+      entityId: job._id,
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: `Job ${status === "closed" ? "closed" : "reopened"} successfully.`,
+      data: job,
+    });
+  } catch (error) {
+    if (error.kind === "ObjectId") {
+      return res.status(400).json({ success: false, message: "Invalid job ID format." });
+    }
+    res.status(500).json({
+      success: false,
+      message: "Server error while updating job status.",
+      error: error.message,
+    });
+  }
+};
+
+module.exports = { getAllJobs, createJob, getJobById, updateJob, deleteJob, getRecruiterStats, patchJobStatus };

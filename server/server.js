@@ -52,6 +52,7 @@ app.use(
 // ─── Routes ────────────────────────────────────────────────────────────────────
 app.use("/api/auth", require("./routes/authRoutes"));
 app.use("/api/jobs", require("./routes/jobRoutes"));
+app.use("/api/applications", require("./routes/applicationRoutes"));
 app.use("/api/recruiter", require("./routes/recruiterRoutes"));
 app.use("/api/candidate", require("./routes/candidateRoutes"));
 
