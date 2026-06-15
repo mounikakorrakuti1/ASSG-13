@@ -15,9 +15,9 @@ const jobSchema = new mongoose.Schema(
       maxlength: [100, "Company name cannot exceed 100 characters"],
     },
     companyLogo: {
-  type: String,
-  default: "",
-},
+      type: String,
+      default: "",
+    },
     location: {
       type: String,
       required: [true, "Location is required"],
@@ -40,6 +40,14 @@ const jobSchema = new mongoose.Schema(
       type: String,
       required: [true, "Job description is required"],
       trim: true,
+    },
+    status: {
+      type: String,
+      enum: {
+        values: ["open", "closed"],
+        message: "Job status must be open or closed",
+      },
+      default: "open",
     },
     postedBy: {
       type: mongoose.Schema.Types.ObjectId,

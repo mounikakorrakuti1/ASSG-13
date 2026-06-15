@@ -33,9 +33,53 @@ const applicationSchema = new mongoose.Schema(
       ],
     },
     resumePath: {
-  type: String,
-  default: "",
-},
+      type: String,
+      default: "",
+    },
+
+    // ── Logged-in candidate reference (null for guest applies) ────────────
+    applicant: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      default: null,
+    },
+
+    // ── ATS pipeline stage ────────────────────────────────────────────────
+    status: {
+      type: String,
+      enum: {
+        values: [
+          "Applied",
+          "Under Review",
+          "Shortlisted",
+          "Interview Scheduled",
+          "Rejected",
+          "Hired",
+        ],
+        message: "Invalid application status",
+      },
+      default: "Applied",
+    },
+
+    // ── Recruiter notes (embedded, timestamped) ───────────────────────────
+    notes: [
+      {
+        text: {
+          type: String,
+          required: [true, "Note text is required"],
+          trim: true,
+          maxlength: [1000, "Note cannot exceed 1000 characters"],
+        },
+        createdAt: {
+          type: Date,
+          default: Date.now,
+        },
+        updatedAt: {
+          type: Date,
+          default: Date.now,
+        },
+      },
+    ],
   },
   {
     timestamps: true,
