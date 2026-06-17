@@ -344,6 +344,13 @@ Candidates can search, filter, and browse available jobs.
 Candidates can apply for jobs and upload resumes.
 
 ---
+## 9. MongoBD Compass
+
+![Screenshot 10](screenshots/10.png)
+
+Database is managed in MongoDB Compass.
+
+---
 
 ## 🔒 Security Features
 
