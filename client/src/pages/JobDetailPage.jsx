@@ -3,6 +3,7 @@ import { useParams, useNavigate, Link } from "react-router-dom";
 import { fetchJobById, deleteJob, applyForJob, fetchApplications, saveJob, unsaveJob, fetchCandidateProfile } from "../services/api";
 import { useAuth } from "../context/AuthContext";
 import ApplyForm from "../components/ApplyForm";
+import ApplicantRow from "../components/ApplicantRow";
 import Loader from "../components/Loader";
 import Toast from "../components/Toast";
 import ConfirmModal from "../components/ConfirmModal";
@@ -12,6 +13,15 @@ const JOB_TYPE_COLORS = {
   "Part Time": "badge-parttime",
   Contract: "badge-contract",
 };
+
+const STATUS_OPTIONS = [
+  "Applied",
+  "Under Review",
+  "Shortlisted",
+  "Interview Scheduled",
+  "Rejected",
+  "Hired",
+];
 
 const JobDetailPage = () => {
   const { id } = useParams();
@@ -25,6 +35,10 @@ const JobDetailPage = () => {
   const [applications, setApplications] = useState([]);
   const [appsLoading, setAppsLoading] = useState(false);
   const [showApps, setShowApps] = useState(false);
+
+  // Search & filter for applicants
+  const [appSearch, setAppSearch] = useState("");
+  const [appStatusFilter, setAppStatusFilter] = useState("");
 
   const [applyLoading, setApplyLoading] = useState(false);
   const [showApplyForm, setShowApplyForm] = useState(false);
@@ -110,22 +124,34 @@ const JobDetailPage = () => {
     }
   };
 
-  const handleViewApplications = async () => {
-    if (showApps) {
-      setShowApps(false);
-      return;
-    }
+  // Loads applicants — recruiter only, applies search & status filter
+  const loadApplications = async () => {
     setAppsLoading(true);
     try {
-      const data = await fetchApplications(id);
+      const data = await fetchApplications(id, { search: appSearch, status: appStatusFilter });
       setApplications(data.data);
-      setShowApps(true);
     } catch (err) {
       setToast({ message: err.message || "Failed to load applications", type: "error" });
     } finally {
       setAppsLoading(false);
     }
   };
+
+  const handleViewApplications = async () => {
+    if (showApps) {
+      setShowApps(false);
+      return;
+    }
+    setShowApps(true);
+    await loadApplications();
+  };
+
+  // Re-fetch whenever search/filter changes while panel is open
+  useEffect(() => {
+    if (!showApps) return;
+    loadApplications();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [appSearch, appStatusFilter]);
 
   if (loading) return <Loader message="Loading job details..." />;
 
@@ -141,6 +167,21 @@ const JobDetailPage = () => {
       </div>
     );
   }
+
+  const ownerId =
+  typeof job.postedBy === "object"
+    ? job.postedBy._id
+    : job.postedBy;
+
+const userId = user?._id || user?.id;
+
+const isOwner =
+  isAuthenticated &&
+  user?.role === "recruiter" &&
+  ownerId === userId;
+console.log("POSTED BY:", job.postedBy);
+console.log("OWNER ID:", ownerId);
+console.log("IS OWNER:", isOwner);
 
   return (
     <div className="page detail-page">
@@ -220,7 +261,7 @@ const JobDetailPage = () => {
             )}
 
             {/* Edit/Delete: only for the recruiter who posted this job */}
-            {isAuthenticated && user?.role === "recruiter" && job.postedBy?._id === user._id && (
+            {isOwner && (
               <>
                 <Link to={`/jobs/${id}/edit`} className="btn btn-outline btn-lg">
                   ✏️ Edit Job
@@ -236,9 +277,11 @@ const JobDetailPage = () => {
             )}
 
             {/* Recruiter viewing someone else's job */}
-            {isAuthenticated && user?.role === "recruiter" && job.postedBy?._id !== user._id && (
-              <p className="role-notice">👁️ You are viewing another recruiter&apos;s listing.</p>
-            )}
+{isAuthenticated && user?.role === "recruiter" && !isOwner && (
+  <p className="role-notice">
+    👁️ You are viewing another recruiter&apos;s listing.
+  </p>
+)}
           </div>
 
           {/* Apply Form */}
@@ -266,73 +309,82 @@ const JobDetailPage = () => {
             </ul>
           </div>
 
-          <div className="sidebar-card">
-            <button
-              className="btn btn-outline btn-full"
-              onClick={handleViewApplications}
-              disabled={appsLoading}
-            >
-              {appsLoading ? "Loading..." : showApps ? "Hide Applications" : "👥 View Applications"}
-            </button>
-          </div>
+          {/* View Applications: recruiter-owner only (endpoint is protected) */}
+          {isOwner && (
+            <div className="sidebar-card">
+              <button
+                className="btn btn-outline btn-full"
+                onClick={handleViewApplications}
+                disabled={appsLoading}
+              >
+                {appsLoading ? "Loading..." : showApps ? "Hide Applications" : "👥 View Applications"}
+              </button>
+            </div>
+          )}
         </div>
       </div>
 
-      {/* Applications Panel */}
-      {showApps && (
+      {/* Applications Panel — recruiter-owner only */}
+      {showApps && isOwner && (
         <div className="applications-panel">
           <h2 className="section-heading">
             Applications ({applications.length})
           </h2>
-          {applications.length === 0 ? (
+
+          {/* Search & status filter */}
+          <div className="profile-form" style={{ flexDirection: "row", gap: "12px", flexWrap: "wrap", marginBottom: "16px" }}>
+            <div className="form-group" style={{ flex: "1 1 220px", margin: 0 }}>
+              <input
+                className="form-input"
+                type="text"
+                placeholder="Search by name or email…"
+                value={appSearch}
+                onChange={(e) => setAppSearch(e.target.value)}
+              />
+            </div>
+            <div className="form-group" style={{ flex: "0 0 200px", margin: 0 }}>
+              <select
+                className="form-input"
+                value={appStatusFilter}
+                onChange={(e) => setAppStatusFilter(e.target.value)}
+              >
+                <option value="">All Statuses</option>
+                {STATUS_OPTIONS.map((s) => (
+                  <option key={s} value={s}>{s}</option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          {appsLoading ? (
+            <Loader message="Loading applicants..." />
+          ) : applications.length === 0 ? (
             <div className="empty-state small">
               <div className="empty-icon">📭</div>
-              <p>No applications received yet.</p>
+              <p>No applications match your search/filter.</p>
             </div>
           ) : (
             <div className="applications-table-wrapper">
               <table className="applications-table">
                 <thead>
                   <tr>
-  <th>#</th>
-  <th>Full Name</th>
-  <th>Email</th>
-  <th>Phone</th>
-  <th>Resume</th>
-  <th>Applied On</th>
-</tr>
+                    <th>Full Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Resume</th>
+                    <th>Status</th>
+                    <th>Applied On</th>
+                    <th>Actions</th>
+                  </tr>
                 </thead>
                 <tbody>
-                  {applications.map((app, idx) => (
-                    <tr key={app._id}>
-                      <td>{idx + 1}</td>
-                      <td>{app.fullName}</td>
-                      <td>
-                        <a href={`mailto:${app.email}`} className="email-link">{app.email}</a>
-                      </td>
-                      <td>{app.phone}</td>
-                      <td>
-  {app.resumePath ? (
-    <a
-      href={`http://localhost:5000${app.resumePath}`}
-      target="_blank"
-      rel="noreferrer"
-      className="btn btn-outline btn-sm"
-    >
-      View Resume
-    </a>
-  ) : (
-    "No Resume"
-  )}
-</td>
-                      <td>
-                        {new Date(app.createdAt).toLocaleDateString("en-IN", {
-                          day: "numeric",
-                          month: "short",
-                          year: "numeric",
-                        })}
-                      </td>
-                    </tr>
+                  {applications.map((app) => (
+                    <ApplicantRow
+                      key={app._id}
+                      app={app}
+                      onUpdated={loadApplications}
+                      setToast={setToast}
+                    />
                   ))}
                 </tbody>
               </table>

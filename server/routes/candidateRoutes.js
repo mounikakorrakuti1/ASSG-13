@@ -6,6 +6,7 @@ const {
   getSavedJobs,
   saveJob,
   unsaveJob,
+  getCandidateApplications,
 } = require("../controllers/candidateController");
 const verifyToken = require("../middleware/verifyToken");
 const checkRole = require("../middleware/checkRole");
@@ -19,6 +20,7 @@ router.put("/profile", updateProfile);
 
 // ─── Saved Jobs ───────────────────────────────────────────────────────────────
 router.get("/saved-jobs", getSavedJobs);
+router.get("/applications", getCandidateApplications);
 router.post("/saved-jobs/:jobId", saveJob);
 router.delete("/saved-jobs/:jobId", unsaveJob);
 

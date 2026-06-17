@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { fetchCandidateApplications } from "../services/api";
 import {
   fetchCandidateProfile,
   updateCandidateProfile,
@@ -21,6 +22,7 @@ const JOB_TYPE_COLORS = {
 const TABS = [
   { id: "profile", label: "👤 Profile" },
   { id: "saved", label: "🔖 Saved Jobs" },
+  { id: "applications", label: "📄 Applied Jobs" },
 ];
 
 // ─── Profile Tab ──────────────────────────────────────────────────────────────
@@ -327,6 +329,94 @@ const SavedJobsTab = () => {
     </div>
   );
 };
+// ─── Applied Jobs Tab ───────────────────────────────────────────────────────
+const AppliedJobsTab = () => {
+  const [applications, setApplications] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  const loadApplications = async () => {
+    try {
+      const res = await fetchCandidateApplications();
+      setApplications(res.data || []);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadApplications();
+  }, []);
+
+  if (loading) return <Loader message="Loading applications..." />;
+
+  return (
+    <div className="candidate-tab-content">
+      <h2 className="section-title">Applied Jobs</h2>
+
+      {applications.length === 0 ? (
+        <p>No applications found.</p>
+      ) : (
+        applications.map((app) => (
+          <div
+            key={app._id}
+            className="saved-job-card"
+            style={{ marginBottom: "16px" }}
+          >
+            <h3>{app.job?.title}</h3>
+
+            <p>
+              <strong>Company:</strong> {app.job?.company}
+            </p>
+
+            <p>
+              <strong>Status:</strong> {app.status}
+            </p>
+
+            {app.interview && (
+              <div style={{ marginTop: "10px" }}>
+                <h4>📅 Interview Scheduled</h4>
+
+                <p>
+                  <strong>Date:</strong>{" "}
+                  {new Date(app.interview.date).toLocaleDateString()}
+                </p>
+
+                <p>
+                  <strong>Time:</strong> {app.interview.time}
+                </p>
+
+                <p>
+                  <strong>Mode:</strong> {app.interview.mode}
+                </p>
+
+                {app.interview.meetingLink && (
+                  <p>
+                    <a
+                      href={app.interview.meetingLink}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      Join Meeting
+                    </a>
+                  </p>
+                )}
+
+                {app.interview.remarks && (
+                  <p>
+                    <strong>Remarks:</strong>{" "}
+                    {app.interview.remarks}
+                  </p>
+                )}
+              </div>
+            )}
+          </div>
+        ))
+      )}
+    </div>
+  );
+};
 
 // ─── Main Dashboard Component ─────────────────────────────────────────────────
 const CandidateDashboard = ({ defaultTab = "profile" }) => {
@@ -415,6 +505,7 @@ const CandidateDashboard = ({ defaultTab = "profile" }) => {
         />
       )}
       {activeTab === "saved" && <SavedJobsTab />}
+      {activeTab === "applications" && <AppliedJobsTab />}
     </div>
   );
 };

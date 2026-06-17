@@ -1,118 +1,171 @@
 # 💼 MiniJobPortal — Full Stack MERN Job Portal
 
-A complete **Full Stack MERN Job Portal** built using **MongoDB, Express.js, React.js, and Node.js**. The platform supports separate recruiter and candidate workflows with authentication, job posting, resume uploads, email notifications, company logos, and advanced search features.
+A complete **Full Stack MERN Job Portal** built using **MongoDB, Express.js, React.js, and Node.js**. The platform supports separate recruiter and candidate workflows with authentication, job posting, resume uploads, interview scheduling, application tracking, email notifications, company logos, and advanced search features.
 
 ---
 
 ## 🚀 Features
 
 ### 🔐 Authentication & Authorization
-- JWT-based Authentication
-- Secure Password Hashing using bcrypt
-- Role-based Access Control
-  - Recruiter
-  - Candidate
+
+* JWT-based Authentication
+* Secure Password Hashing using bcrypt
+* Role-based Access Control
+
+  * Recruiter
+  * Candidate
 
 ---
 
 ### 👨‍💼 Recruiter Features
-- Recruiter Registration & Login
-- Post New Jobs
-- Upload Company Logos
-- Edit Existing Jobs
-- Delete Jobs
-- View Applications
-- Download/View Candidate Resumes
-- Recruiter Dashboard Statistics
-- Email Notifications on New Applications
+
+* Recruiter Registration & Login
+* Post New Jobs
+* Upload Company Logos
+* Edit Existing Jobs
+* Delete Jobs
+* View Applications
+* Download/View Candidate Resumes
+* Recruiter Dashboard Statistics
+* Add Recruiter Notes
+* Update Application Status
+* Schedule Interviews
+* Edit Interview Schedule
+* Cancel Interviews
+* Email Notifications on New Applications
 
 ---
 
 ### 👨‍🎓 Candidate Features
-- Candidate Registration & Login
-- Browse Jobs
-- Search Jobs
-- Save Jobs
-- Apply for Jobs
-- Upload Resume (PDF/DOC/DOCX)
-- Candidate Dashboard
-- Edit Profile
+
+* Candidate Registration & Login
+* Browse Jobs
+* Search Jobs
+* Save Jobs
+* Apply for Jobs
+* Upload Resume (PDF/DOC/DOCX)
+* Candidate Dashboard
+* Edit Profile
+* View Applied Jobs
+* Track Application Status
+* View Interview Schedule
+* Access Meeting Links
 
 ---
 
 ### 🔎 Advanced Job Search
-- Search by Job Title
-- Search by Company
-- Filter by Location
-- Filter by Salary Range
-- Filter by Job Type
-- Sorting Options
-- Pagination
+
+* Search by Job Title
+* Search by Company
+* Filter by Location
+* Filter by Salary Range
+* Filter by Job Type
+* Sorting Options
+* Pagination
 
 ---
 
 ### 📂 File Upload Features
-- Resume Upload
-  - PDF
-  - DOC
-  - DOCX
-- Company Logo Upload
-- Multer-based File Storage
+
+* Resume Upload
+
+  * PDF
+  * DOC
+  * DOCX
+* Company Logo Upload
+* Multer-based File Storage
 
 ---
 
 ### 📧 Email Notification System
+
 When a candidate applies:
 
-- Recruiter receives an email automatically.
-- Email contains:
-  - Applicant Name
-  - Email
-  - Phone Number
-  - Job Title
-  - Company Name
+* Recruiter receives an email automatically.
+* Email contains:
+
+  * Applicant Name
+  * Email
+  * Phone Number
+  * Job Title
+  * Company Name
 
 Implemented using:
 
-- NodeMailer
-- Gmail SMTP
+* NodeMailer
+* Gmail SMTP
+
+---
+
+## 🎯 Applicant Tracking System (ATS)
+
+The portal includes a complete Applicant Tracking System.
+
+Application stages:
+
+* Applied
+* Under Review
+* Shortlisted
+* Interview Scheduled
+* Rejected
+* Hired
+
+Recruiters can:
+
+* Update candidate status
+* Add recruiter notes
+* Schedule interviews
+* Manage interview details
+
+Candidates can:
+
+* View application progress
+* Track interview schedules
+* Access online meeting links
 
 ---
 
 ### 🎨 User Interface
-- Responsive Design
-- Dark Mode
-- Light Mode
-- Modern Dashboard UI
-- Mobile Friendly
+
+* Responsive Design
+* Dark Mode
+* Light Mode
+* Modern Dashboard UI
+* Mobile Friendly
 
 ---
 
 ## 🛠️ Tech Stack
 
 ### Frontend
-- React.js
-- React Router DOM
-- CSS3
-- Fetch API
+
+* React.js
+* React Router DOM
+* CSS3
+* Fetch API
 
 ### Backend
-- Node.js
-- Express.js
+
+* Node.js
+* Express.js
 
 ### Database
-- MongoDB
-- Mongoose
+
+* MongoDB
+* Mongoose
 
 ### Authentication
-- JWT
-- bcryptjs
+
+* JWT
+* bcryptjs
 
 ### File Upload
-- Multer
+
+* Multer
 
 ### Email Service
-- NodeMailer
+
+* NodeMailer
 
 ---
 
@@ -143,6 +196,16 @@ MiniJobPortal/
 │   └── server.js
 │
 ├── screenshots/
+│   ├── 1.png
+│   ├── 2.png
+│   ├── 3.png
+│   ├── 4.png
+│   ├── 5.png
+│   ├── 6.png
+│   ├── 7.png
+│   ├── 8.png
+│   └── 9.png
+│
 └── README.md
 ```
 
@@ -210,135 +273,100 @@ EMAIL_PASS=your_gmail_app_password
 
 # 📸 Project Screenshots
 
-## 1. Candidate Job Details & Resume Upload
+## 1. Candidate Dashboard – Applied Jobs & Interview Schedule
 
-![Job Details](screenshots/10.png)
+![Screenshot 1](screenshots/1.png)
 
-Candidates can:
-- View complete job details
-- Upload resumes (PDF/DOC/DOCX)
-- Apply for jobs
-- Save jobs for later
+Candidates can track applications, monitor status updates, and view interview schedules.
 
 ---
 
-## 2. Saved Jobs Dashboard
+## 2. Candidate Dashboard – Profile Management
 
-![Saved Jobs](screenshots/9.png)
+![Screenshot 2](screenshots/2.png)
 
-Candidates can bookmark jobs and access them later from the dashboard.
-
----
-
-## 3. Candidate Dashboard Profile
-
-![Candidate Dashboard](screenshots/8.png)
-
-Manage profile information including:
-- Skills
-- Experience
-- Location
-- Saved jobs
+Candidates can manage profile information including skills, experience, and location.
 
 ---
 
-## 4. Post Job Page with Company Logo Upload
+## 3. Recruiter Application Management
 
-![Post Job](screenshots/7.png)
+![Screenshot 3](screenshots/3.png)
 
-Recruiters can create new job postings and upload company logos.
-
----
-
-## 5. Recruiter Dashboard
-
-![Recruiter Dashboard](screenshots/6.png)
-
-Dashboard statistics include:
-- Total jobs posted
-- Total applications
-- Average applications per job
+Recruiters can manage candidates, add notes, and schedule interviews.
 
 ---
 
-## 6. Login Page
+## 4. Application Status Tracking System (ATS)
 
-![Login](screenshots/5.png)
+![Screenshot 4](screenshots/4.png)
 
-Secure JWT-based authentication system.
+Recruiters can update application status through multiple recruitment stages.
 
 ---
 
-## 7. Registration Page
+## 5. Job Applications List
 
-![Register](screenshots/4.png)
+![Screenshot 5](screenshots/5.png)
 
-Role-based registration for:
-- Recruiters
-- Job Seekers
+Displays all applications received for a job with resume access and management features.
+
+---
+
+## 6. Post New Job
+
+![Screenshot 6](screenshots/6.png)
+
+Recruiters can create job listings and upload company logos.
+
+---
+
+## 7. Recruiter Dashboard
+
+![Screenshot 7](screenshots/7.png)
+
+Shows job statistics, application counts, and recruitment analytics.
 
 ---
 
 ## 8. Browse Jobs Page
 
-![Browse Jobs](screenshots/3.png)
+![Screenshot 8](screenshots/8.png)
 
-Features:
-- Search jobs
-- Filter by company
-- Filter by location
-- Salary filtering
-- Job type filtering
-- Pagination
+Candidates can search, filter, and browse available jobs.
 
 ---
 
-## 9. Email Notification System
+## 9. Job Application Form
 
-![Email Notification](screenshots/2.png)
+![Screenshot 9](screenshots/9.png)
 
-Recruiters automatically receive email notifications whenever a candidate applies for a job.
-
-The email contains:
-- Applicant Name
-- Email
-- Phone Number
-- Job Details
-
----
-
-## 10. Recruiter Application Management
-
-![Applications](screenshots/1.png)
-
-Recruiters can:
-- View all applications
-- Access uploaded resumes
-- Track application dates
+Candidates can apply for jobs and upload resumes.
 
 ---
 
 ## 🔒 Security Features
 
-- Password Hashing using bcrypt
-- JWT Authentication
-- Protected Routes
-- Role-based Authorization
-- File Type Validation
-- Input Validation
-- Duplicate Application Prevention
+* Password Hashing using bcrypt
+* JWT Authentication
+* Protected Routes
+* Role-based Authorization
+* File Type Validation
+* Input Validation
+* Duplicate Application Prevention
 
 ---
 
 ## 📈 Future Enhancements
 
-- Cloudinary Integration
-- Resume Parsing
-- Interview Scheduling
-- AI Resume Screening
-- Job Recommendation System
-- Real-time Notifications
-- Admin Dashboard
+* Cloudinary Integration
+* Resume Parsing
+* AI Resume Screening
+* Job Recommendation System
+* Real-time Notifications
+* Admin Dashboard
+* Video Interview Integration
+* Resume Ranking using AI
 
 ---
 
@@ -358,6 +386,8 @@ Department of Computer Science & Engineering
 
 ✅ Role-Based Access Control
 
+✅ Applicant Tracking System (ATS)
+
 ✅ Resume Upload
 
 ✅ Company Logo Upload
@@ -370,6 +400,14 @@ Department of Computer Science & Engineering
 
 ✅ Saved Jobs
 
+✅ Interview Scheduling
+
+✅ Recruiter Notes
+
+✅ Application Status Tracking
+
+✅ Candidate Applied Jobs Dashboard
+
 ✅ Advanced Search & Filters
 
 ✅ Pagination
@@ -379,5 +417,3 @@ Department of Computer Science & Engineering
 ✅ MongoDB Integration
 
 ✅ REST API Architecture
-
----

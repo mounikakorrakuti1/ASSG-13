@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import { fetchRecruiterStats, deleteJob, updateJob } from "../services/api";
+import { fetchRecruiterStats, fetchRecruiterAnalytics, fetchRecruiterActivity, deleteJob, updateJob } from "../services/api";
 import JobForm from "../components/JobForm";
 import ConfirmModal from "../components/ConfirmModal";
 import Toast from "../components/Toast";
@@ -13,6 +13,13 @@ const JOB_TYPE_COLORS = {
   Contract: "badge-contract",
 };
 
+// Map activity entityType to an icon for the Recent Activity panel
+const ACTIVITY_ICONS = {
+  job: "📋",
+  application: "📝",
+  interview: "🗓️",
+};
+
 const RecruiterDashboard = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -21,6 +28,14 @@ const RecruiterDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [toast, setToast] = useState(null);
+
+  // Analytics
+  const [analytics, setAnalytics] = useState(null);
+  const [analyticsLoading, setAnalyticsLoading] = useState(true);
+
+  // Recent activity
+  const [activity, setActivity] = useState([]);
+  const [activityLoading, setActivityLoading] = useState(true);
 
   // Edit modal
   const [editingJob, setEditingJob] = useState(null); // job object being edited
@@ -43,7 +58,35 @@ const RecruiterDashboard = () => {
     }
   }, []);
 
-  useEffect(() => { loadStats(); }, [loadStats]);
+  const loadAnalytics = useCallback(async () => {
+    setAnalyticsLoading(true);
+    try {
+      const data = await fetchRecruiterAnalytics();
+      setAnalytics(data.data);
+    } catch {
+      // non-fatal — cards will simply not render
+    } finally {
+      setAnalyticsLoading(false);
+    }
+  }, []);
+
+  const loadActivity = useCallback(async () => {
+    setActivityLoading(true);
+    try {
+      const data = await fetchRecruiterActivity();
+      setActivity(data.data || []);
+    } catch {
+      // non-fatal
+    } finally {
+      setActivityLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    loadStats();
+    loadAnalytics();
+    loadActivity();
+  }, [loadStats, loadAnalytics, loadActivity]);
 
   // ── Edit ──────────────────────────────────────────────────────────────────
   const handleEditSubmit = async (formData) => {
@@ -53,6 +96,7 @@ const RecruiterDashboard = () => {
       setToast({ message: "Job updated successfully ✅", type: "success" });
       setEditingJob(null);
       loadStats(); // refresh list
+      loadAnalytics(); // refresh analytics too
     } catch (err) {
       setToast({ message: err.message || "Failed to update job", type: "error" });
     } finally {
@@ -68,6 +112,7 @@ const RecruiterDashboard = () => {
       setToast({ message: "Job deleted successfully 🗑️", type: "success" });
       setDeletingJob(null);
       loadStats();
+      loadAnalytics();
     } catch (err) {
       setToast({ message: err.message || "Failed to delete job", type: "error" });
     } finally {
@@ -174,6 +219,118 @@ const RecruiterDashboard = () => {
           </div>
         </div>
       </div>
+
+      {/* ── Analytics Section ───────────────────────────────────────── */}
+      <section className="dashboard-section">
+        <div className="section-header">
+          <h2 className="section-title">Recruitment Analytics</h2>
+        </div>
+
+        {analyticsLoading ? (
+          <Loader message="Loading analytics..." />
+        ) : !analytics ? (
+          <div className="empty-state small">
+            <p>Analytics unavailable right now.</p>
+          </div>
+        ) : (
+          <>
+            <div className="stat-cards">
+              <div className="stat-card">
+                <div className="stat-icon">📋</div>
+                <div className="stat-info">
+                  <span className="stat-value">{analytics.totalJobs}</span>
+                  <span className="stat-label">Total Jobs</span>
+                </div>
+              </div>
+              <div className="stat-card">
+                <div className="stat-icon">🟢</div>
+                <div className="stat-info">
+                  <span className="stat-value">{analytics.activeJobs}</span>
+                  <span className="stat-label">Active Jobs</span>
+                </div>
+              </div>
+              <div className="stat-card">
+                <div className="stat-icon">🔴</div>
+                <div className="stat-info">
+                  <span className="stat-value">{analytics.closedJobs}</span>
+                  <span className="stat-label">Closed Jobs</span>
+                </div>
+              </div>
+              <div className="stat-card">
+                <div className="stat-icon">👥</div>
+                <div className="stat-info">
+                  <span className="stat-value">{analytics.totalApplicants}</span>
+                  <span className="stat-label">Total Applicants</span>
+                </div>
+              </div>
+              <div className="stat-card">
+                <div className="stat-icon">⭐</div>
+                <div className="stat-info">
+                  <span className="stat-value">{analytics.shortlisted}</span>
+                  <span className="stat-label">Shortlisted</span>
+                </div>
+              </div>
+              <div className="stat-card">
+                <div className="stat-icon">❌</div>
+                <div className="stat-info">
+                  <span className="stat-value">{analytics.rejected}</span>
+                  <span className="stat-label">Rejected</span>
+                </div>
+              </div>
+              <div className="stat-card">
+                <div className="stat-icon">🏆</div>
+                <div className="stat-info">
+                  <span className="stat-value">{analytics.hired}</span>
+                  <span className="stat-label">Hired</span>
+                </div>
+              </div>
+            </div>
+
+            {analytics.topPerformingJob && (
+              <div className="empty-state small" style={{ marginTop: "12px" }}>
+                <p>
+                  🏆 Top performing job: <strong>{analytics.topPerformingJob.title}</strong>{" "}
+                  ({analytics.topPerformingJob.applicationCount} applicant
+                  {analytics.topPerformingJob.applicationCount !== 1 ? "s" : ""})
+                </p>
+              </div>
+            )}
+          </>
+        )}
+      </section>
+
+      {/* ── Recent Activity Section ─────────────────────────────────── */}
+      <section className="dashboard-section">
+        <div className="section-header">
+          <h2 className="section-title">Recent Activity</h2>
+        </div>
+
+        {activityLoading ? (
+          <Loader message="Loading activity..." />
+        ) : activity.length === 0 ? (
+          <div className="empty-state small">
+            <div className="empty-icon">🕑</div>
+            <p>No recent activity yet.</p>
+          </div>
+        ) : (
+          <ul className="activity-list">
+            {activity.map((item) => (
+              <li key={item._id} className="activity-item">
+                <span className="activity-icon">{ACTIVITY_ICONS[item.entityType] || "🔔"}</span>
+                <div className="activity-info">
+                  <p className="activity-message">{item.message}</p>
+                  <span className="activity-time">
+                    {new Date(item.createdAt).toLocaleString("en-IN", {
+                      day: "numeric", month: "short", year: "numeric",
+                      hour: "numeric", minute: "2-digit",
+                    })}
+                  </span>
+                </div>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
 
       {/* ── My Jobs Table ─────────────────────────────────────────────── */}
       <section className="dashboard-section">

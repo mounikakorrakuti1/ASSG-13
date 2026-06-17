@@ -92,9 +92,9 @@ export const deleteJob = async (id) => {
 
 // ─── Applications ──────────────────────────────────────────────────────────────
 export const applyForJob = async (id, applicationData) => {
+  const token = localStorage.getItem("mjp-token"); // FIXED
 
-console.log(applicationData);  
-const formData = new FormData();
+  const formData = new FormData();
 
   formData.append("fullName", applicationData.fullName);
   formData.append("email", applicationData.email);
@@ -106,20 +106,95 @@ const formData = new FormData();
 
   const res = await fetch(`${BASE_URL}/jobs/${id}/apply`, {
     method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
     body: formData,
   });
 
   return handleResponse(res);
 };
 
-export const fetchApplications = async (id) => {
-  const res = await fetch(`${BASE_URL}/jobs/${id}/applications`);
+// Recruiter-only: view applicants for a job, with optional search & status filter
+export const fetchApplications = async (id, { search = "", status = "" } = {}) => {
+  const params = new URLSearchParams();
+  if (search) params.append("search", search);
+  if (status) params.append("status", status);
+  const query = params.toString();
+  const res = await authFetch(`${BASE_URL}/jobs/${id}/applications${query ? `?${query}` : ""}`);
+  return handleResponse(res);
+};
+
+// PATCH /api/applications/:id/status
+export const updateApplicationStatus = async (applicationId, status) => {
+  const res = await authFetch(`${BASE_URL}/applications/${applicationId}/status`, {
+    method: "PATCH",
+    body: JSON.stringify({ status }),
+  });
+  return handleResponse(res);
+};
+
+// ─── Recruiter Notes ────────────────────────────────────────────────────────
+export const addApplicationNote = async (applicationId, text) => {
+  const res = await authFetch(`${BASE_URL}/applications/${applicationId}/notes`, {
+    method: "POST",
+    body: JSON.stringify({ text }),
+  });
+  return handleResponse(res);
+};
+
+export const updateApplicationNote = async (applicationId, noteId, text) => {
+  const res = await authFetch(`${BASE_URL}/applications/${applicationId}/notes/${noteId}`, {
+    method: "PUT",
+    body: JSON.stringify({ text }),
+  });
+  return handleResponse(res);
+};
+
+export const deleteApplicationNote = async (applicationId, noteId) => {
+  const res = await authFetch(`${BASE_URL}/applications/${applicationId}/notes/${noteId}`, {
+    method: "DELETE",
+  });
+  return handleResponse(res);
+};
+
+// ─── Interview Management ────────────────────────────────────────────────────
+export const scheduleInterview = async (applicationId, interviewData) => {
+  const res = await authFetch(`${BASE_URL}/applications/${applicationId}/interview`, {
+    method: "POST",
+    body: JSON.stringify(interviewData),
+  });
+  return handleResponse(res);
+};
+
+export const updateInterview = async (applicationId, interviewData) => {
+  const res = await authFetch(`${BASE_URL}/applications/${applicationId}/interview`, {
+    method: "PUT",
+    body: JSON.stringify(interviewData),
+  });
+  return handleResponse(res);
+};
+
+export const cancelInterview = async (applicationId) => {
+  const res = await authFetch(`${BASE_URL}/applications/${applicationId}/interview`, {
+    method: "DELETE",
+  });
   return handleResponse(res);
 };
 
 // ─── Recruiter ────────────────────────────────────────────────────────────────
 export const fetchRecruiterStats = async () => {
   const res = await authFetch(`${BASE_URL}/recruiter/stats`);
+  return handleResponse(res);
+};
+
+export const fetchRecruiterAnalytics = async () => {
+  const res = await authFetch(`${BASE_URL}/recruiter/analytics`);
+  return handleResponse(res);
+};
+
+export const fetchRecruiterActivity = async () => {
+  const res = await authFetch(`${BASE_URL}/recruiter/activity`);
   return handleResponse(res);
 };
 
@@ -139,6 +214,11 @@ export const updateCandidateProfile = async (profileData) => {
 
 export const fetchSavedJobs = async () => {
   const res = await authFetch(`${BASE_URL}/candidate/saved-jobs`);
+  return handleResponse(res);
+};
+
+export const fetchCandidateApplications = async () => {
+  const res = await authFetch(`${BASE_URL}/candidate/applications`);
   return handleResponse(res);
 };
 

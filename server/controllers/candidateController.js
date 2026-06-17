@@ -1,5 +1,7 @@
 const User = require("../models/User");
 const Job = require("../models/Job");
+const Application = require("../models/Application");
+const Interview = require("../models/Interview");
 
 // ─── GET /api/candidate/profile ──────────────────────────────────────────────
 // Returns the logged-in jobseeker's full profile (incl. savedJobs count).
@@ -148,5 +150,46 @@ const unsaveJob = async (req, res) => {
     res.status(500).json({ success: false, message: "Server error removing saved job.", error: err.message });
   }
 };
+// ─── GET /api/candidate/applications ────────────────────────────────────────
+const getCandidateApplications = async (req, res) => {
+  try {
+    const applications = await Application.find({
+      applicant: req.user.id,
+    })
+      .populate("job")
+      .sort({ createdAt: -1 });
 
-module.exports = { getProfile, updateProfile, getSavedJobs, saveJob, unsaveJob };
+    const result = await Promise.all(
+      applications.map(async (app) => {
+        const interview = await Interview.findOne({
+          applicationId: app._id,
+        });
+
+        return {
+          ...app.toObject(),
+          interview,
+        };
+      })
+    );
+
+    res.status(200).json({
+      success: true,
+      total: result.length,
+      data: result,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Server error while fetching applications",
+      error: error.message,
+    });
+  }
+};
+module.exports = {
+  getProfile,
+  updateProfile,
+  getSavedJobs,
+  saveJob,
+  unsaveJob,
+  getCandidateApplications,
+};

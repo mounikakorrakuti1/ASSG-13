@@ -37,6 +37,7 @@ router.patch("/:id/status", verifyToken, checkRole(["recruiter"]), patchJobStatu
 // ─── Application Routes ───────────────────────────────────────────────────────
 router.post(
   "/:id/apply",
+  verifyToken,
   uploadResume.single("resume"),
   applyForJob
 );

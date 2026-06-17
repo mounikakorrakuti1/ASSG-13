@@ -6,6 +6,7 @@ const { sendApplicationEmail } = require("../utils/mailer");
 
 // ─── POST /api/jobs/:id/apply ─────────────────────────────────────────────────
 const applyForJob = async (req, res) => {
+  console.log("REQ USER:", req.user);
   try {
     const { fullName, email, phone } = req.body;
 
@@ -48,7 +49,7 @@ const applyForJob = async (req, res) => {
       email: email.trim().toLowerCase(),
       phone: phone.trim(),
       resumePath,
-      applicant: req.user ? req.user.id : null,
+      applicant: req.user?._id || req.user?.id || null,
     });
 
     await sendApplicationEmail(job.postedBy.email, application, job);
